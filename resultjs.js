@@ -280,7 +280,7 @@ window.addEventListener('load', ()=> {
 
 //TIME AND DATE//
 months = ['Jan.', 'Feb.', 'March', 'April', 'May','June', 'July', 'Aug.','Sept.', 'Oct', 'Nov.', 'Dec.'];
-days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat'];
 
 // get day
 datedata = new Date();
