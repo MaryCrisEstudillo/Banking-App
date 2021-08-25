@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="meadiaquery.css"/>
+    <title>Banking App.</title>
+</head>
+
+<div id="modal"></div>
+<div id="modalBox"></div>
+<div id="closeModal" onclick="closeAllModals()">Ok</div>
+
+<header id="header" >
+        <img id="backgroundVector" src="images/6943.png" alt="backgroundVector">
+</header>
+        <div id="iconcontphone"></div>
+        <img id="iconsOne" onclick="showSearch()" src="images/searchfix.png" alt="search" title="SEARCH">
+        <img id="iconsTwo" onclick="showHistory()"src="images/historyfix.png" alt="history" title="VIEW HISTORY" >
+        <img id="iconsThree" onclick="showAdduser()"src="images/add userfix.png" alt="add user" title="ADD NEW USER">
+        <img id="iconsFour" onclick="showTransac()"src="images/transactionfix.png" alt="transaction" title="TRANSAC USER">
+<body>
+
+    
+    <img src="images/PIGGY BANK.png" id="toLoad" alt="piggy bank" title="To Load User"/>
+    <h3 id="greeting">Good Day</h3>
+    <h3 id="introName"></h3>
+    <p id="quotes">Keep up the good work even when no one is watching</p>
+    <div id="day">Monday</div>
+    <div id="timeForEmployee"></div>
+    <div id="dateForEmployee"></div>
+    <div id="containerBlue"></div>
+
+<!---SEARCH FORM----> 
+    <div id="searchIconContainer"></div>
+    <form  id="searchFormContainer" >
+        <!--<img src="images/search.png" alt="searchbutton" id="searchIconclicked">-->
+        <div id="titleSearch">SEARCH USER</div>
+        <input type="text" id="searchFirstName" placeholder="First Name" reqiured>
+        <input type="text" id="searchLastName" placeholder="Last Name" required>
+        <input type="number" id="searchAccount"  placeholder="Account Number" required>
+        <input type="submit" id="searchbutton" value="SEARCH">
+    </form>
+    
+    <table id="searchResult"></table>
+    <div id="getBalance"></div>
+    <div class="hideBtn" id="hideBtnSearch" onclick="hide_all()">X</div>
+<!---HISTORY DATA---->
+ <div id="historyContainer">
+    <table id="historyInput">
+    </table>
+        <p id="historyLabel">
+            <span class="span">Account</span>
+            <span class="span1">Name</span>
+            <span class="span4">Date</span>
+            <span class="span5">Time</span>
+            <span class="span2">Balance</span>
+
+        </p><!--add list user-->
+    </div>
+    <div class="hideBtn" id="hideBtnHistory" onclick="hide_all()">X</div>
+<!---ADD USER FORM---->
+
+    <div id="aduserIconContainer"></div>
+<form id="aduserInputContainer">
+    <div id="titleAduser">ADD USER</div>
+    <input type="text" class="aduserInputs" id="fIrstNameAduser" placeholder="First Name">
+    <input type="text" class="aduserInputs" id="lastNameAduser"  placeholder="Last Name" >
+    <label for="dateofBirthAduser" id="dateofBirth">Date of birth</label>
+    <input type="date" class="aduserInputs" id="dateofBirthAduser" placeholder="MM/DD/YYYY" >
+    <label for="initialDepositAduser"id="initialDeposit">Initial Deposit</label>
+    <input type="number" class="aduserInputs" id="initialDepositAduser" placeholder="Amount" >
+    <input type="submit" id="addButton" value="ADD"></input>
+</form>
+<div class="hideBtn" id="hideBtnAduser" onclick="hide_all()">X</div>
+<!---TRANSACTION FORM---->
+<!---DEPOSIT AND WITHDRAW FORM---->
+
+<div id="transacIconContainer"></div>
+<!-- <div id="transaction"></div> -->
+<form id="depoContainer" class="containerExtra">
+    <label for="user" class="userDetails">DEPOSIT</label>
+    <input type="text" class="transacInputs" id="transacfirstName" placeholder=" First Name">
+    <input type="text" class="transacInputs" id="transaclastName" placeholder="Last Name">
+    <label for="depoaccountNumber" class="numberLabel">Account Number</label>
+    <input type="number" class="transacInputs" id="depoaccountNumber" placeholder="XX-XXXX-XXXX">
+    <label for="depowthdrawAmount" class="numberLabel">Deposit Amount</label>
+    <input type="number" class="transacInputs" id="depoAmount" placeholder="Amount">
+    <input type="submit" class="depoButton" id="depoButtonId" value="DEPOSIT"></input>
+</form>
+<!--<div class="hideBtn" id="hideBtnDeposit">X</div>-->
+<form id="withdrawForm">
+    <label for="user" class="userDetails">Enter User's Details</label>
+    <input type="text" class="transacInputs" id="withdrawfirstName" placeholder=" First Name">
+    <input type="text" class="transacInputs" id="withdrawlastName" placeholder="Last Name">
+    <label for="depoaccountNumber" class="numberLabel">Account Number</label>
+    <input type="number" class="transacInputs" id="withdrawccountNumber" placeholder="XX-XXXX-XXXX">
+    <label for="depowthdrawAmount" class="numberLabel">Withdraw Amount</label>
+    <input type="number" class="transacInputs" id="withdrawAmount" placeholder="Amount">
+    <input type="submit" class="withdrawButton" id="withdrawButtonId" value="WITHDRAW"></input>
+</form>
+<div class="hideBtn" id="hideBtnWithdraw" onclick="hide_all()">X</div>
+<!---TRANSFER FORM---->
+<div id="titleTransac" class="titleBtn1">
+    <div id="depositBtn" onclick="depoForm()" > Deposit</div>
+    <div id="WithdrawBtn" onclick="withdrawForm()"> Withdraw</div>
+    <div id="TransferBtn" onclick="TransFer()"> Transfer</div>
+</div>
+<div id="transferContainer">
+
+    <form id="userTransferForm">
+        <label for="user" class="userDetails1">Enter User's Details</label>
+        <input type="text" class="transacInputs1" id="transacfirstName1" placeholder=" First Name">
+        <input type="text" class="transacInputs1" id="transacmiddleName1" placeholder="Last Name">
+        <label for="depoaccountNumber" class="numberLabel1">Account Number</label>
+        <input type="number" class="transacInputs1" id="senderAccountNumber" placeholder="XX-XXXX-XXXX">
+        <label for="depowthdrawAmount" class="numberLabel1">Deposit Amount</label>
+        <input type="number" class="transacInputs1" id="sendAmount" placeholder="Amount" required>
+    </form>
+    <form id="receiverTransferForm">
+        <label for="receiver" class="receiverDetails">Enter Receiver's Details</label>
+        <input type="text" class="transacInputs2" id="transacfirstName2" placeholder=" First Name">
+        <input type="text" class="transacInputs2" id="transacmiddleName2" placeholder="Last Name">
+        <label for="depoaccountNumber" class="numberLabel2">Account Number</label>
+        <input type="number" class="transacInputs2" id="receiverAccountNumber" placeholder="XX-XXXX-XXXX">
+        <input type="submit" class="transferButton" id="transferButtonId" value="TRANSFER"></input>
+    </form>
+</div>
+<!--<div class="hideBtn" id="hideBtnTransfer">X</div>-->
+</body>
+<script src="resultjs.js"></script>
+</html>

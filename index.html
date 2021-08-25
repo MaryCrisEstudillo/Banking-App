@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="logIn.css"/> -->
+    <title>Piggy Bank Log In</title>
+</head>
+<style>
+    *{
+    outline: none;
+}
+/* FOR LOG IN FILE*/
+body{
+    width: 100vw;
+    height: 100vh;
+    background-image: url(images/buildings.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+#containerFormLogIn{
+    /* background-color: #ffffff; */
+    width: 18VW;
+    height: 23VW;
+    margin-top: 18vw;
+    margin-left: 40vw;
+    border-radius: 3vw 3vw 3vw 3vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* box-shadow: .2vw .2vw .4vw 0 rgba(0, 45, 247, 0.199); */
+}
+.logInInputs{
+    box-shadow: .2vw .2vw .4vw 0 rgba(2, 23, 116, 0.61);
+    width: 15vw;
+    height: .8vw;
+    border-radius: 1vw;
+    margin-bottom: 1.5vw;
+    z-index: 4;
+    border: none;
+    padding: .5vw 0vw .5vw 1vw;
+    font-size: .8vw;
+    font-family: 'Montserrat', sans-serif;
+    color: rgb(49, 47, 47);
+}
+#logIn{
+    box-shadow: .2vw .2vw .4vw 0 rgba(2, 23, 116, 0.61);
+    background-color: #005EFF;
+    width: 5vw;
+    height: 2vw;
+    font-size: 1vw;
+    border-radius: 1vw;
+    color: #ffffff;
+    border: none;
+}
+#passWord{
+    width: 12.7vw;
+    margin-left: -2.3vw;
+}
+#piggyBank{
+    position: absolute;
+    top: 2vw;
+    left:42vw;
+    width: 15vw;
+    height: 15vw;
+}
+#checkBox{
+    position: absolute;
+    top: 30.1vw;
+    left: 55.7vw;
+    width: 1.5vw;
+    height: 1.5vw;
+    box-shadow: .2vw .2vw .4vw 0 rgba(2, 23, 116, 0.61);
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: .2vw solid rgb(255, 255, 255);
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#checkBox:checked {
+    background-color: #005EFF;
+}
+
+@media(orientation:portrait){
+body{
+    width: 50vw;
+    height: 104.5vw;
+    background-image: url(images/buildings.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+#containerFormLogIn{
+    /* background-color: #ffffff; */
+    width: 18vw;
+    height: 23vw;
+    margin-top: 58vw;
+    margin-left: 40vw;
+    border-radius: 3vw 3vw 3vw 3vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* box-shadow: .2vw .2vw .4vw 0 rgba(0, 45, 247, 0.199); */
+}
+.logInInputs{
+    box-shadow: .2vw .8vw .8vw 0 rgba(2, 23, 116, 0.61);
+    width: 50vw;
+    height: 20vw;
+    border-radius: 10vw;
+    margin-bottom: 3vw;
+    z-index: 4;
+    border: none;
+    padding: 1.7vw 0vw 1.7vw 4vw;
+    font-size: 2.5vw;
+    font-family: 'Montserrat', sans-serif;
+    color: rgb(49, 47, 47);
+}
+#logIn{
+    box-shadow: .2vw .8vw .8vw 0 rgba(2, 23, 116, 0.61);
+    background-color: #005EFF;
+    width: 15vw;
+    height: 20vw;
+    font-size: 3vw;
+    border-radius: 10vw;
+    padding: 1.5vw 0vw 2vw 1vw;
+    color: #ffffff;
+    border: none;
+}
+#passWord{
+    width: 42vw;
+    margin-left: -8vw;
+}
+#piggyBank{
+    position: absolute;
+    top: 4vw;
+    left:35vw;
+    width: 33vw;
+    height: 33vw;
+}
+#checkBox{
+    position: absolute;
+    top: 70.8vw;
+    left: 71vw;
+    width: 5.8vw;
+    height: 5.8vw;
+    box-shadow: .2vw .8vw .8vw 0 rgba(2, 23, 116, 0.61);
+    background-color: white;
+    border-radius: 50%;
+    vertical-align: middle;
+    border: .2vw solid rgb(255, 255, 255);
+    -webkit-appearance: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#checkBox:checked {
+    background-color: #005EFF;
+}
+}
+</style>
+<body>
+    <img src="images/PIGGYBANKlogo.png" id="piggyBank" alt="piggy bank">
+    <form action="result app.html" method="get" id="containerFormLogIn">
+    <input type="text"  class="logInInputs" id="userName" name="userName" placeholder="First Name" required >
+    <input type="text" class="logInInputs" id="lastName" placeholder="Lastname" required>
+    <input type="password" class="logInInputs" id="passWord" placeholder="Password" maxlength="6" required>
+    <input type="checkbox" id="checkBox" onclick="viewPassword()">
+    <input type="submit" id="logIn" value="Log In">
+    </form>
+
+</body>
+<script>
+    function viewPassword() {
+  let view = document.getElementById("passWord");
+  if (view.type === "password") {
+    view.type = "text";
+  } else {
+    view.type = "password";
+  }
+}
+</script>
+</html>

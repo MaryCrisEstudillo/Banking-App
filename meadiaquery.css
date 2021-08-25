@@ -1,0 +1,916 @@
+::-webkit-scrollbar{
+    display: none;}
+*{margin: 0;
+outline: none;}
+
+
+/* HEADER AND ICONS*/
+.hideBtn{
+    background-color: #ffffff;
+    color: #d80e0e;
+    width: 4.5vw;
+    height: 4.3vw;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 5vw;
+    font-size: 3.5vw;
+    margin-top: 2vw;
+    padding-left: 0vw;
+    position: absolute;
+    border: .5vw solid white;
+    box-shadow: 1.5vw 0vw 1.5vw 0 rgba(0, 0, 0, 0.16);
+}
+#hideBtnSearch{
+    position: absolute;
+    top: 33vw;
+    left: 83.5vw;
+    z-index: 20;
+    cursor: pointer;
+    visibility: hidden;
+
+}
+#hideBtnHistory{
+    position: absolute;
+    top: 33vw;
+    left: 93vw;
+    z-index: 20;
+    cursor: pointer;
+    visibility: hidden;
+}
+#hideBtnAduser{
+    position: absolute;
+    top: 33vw;
+    left: 83.5vw;
+    z-index: 20;
+    cursor: pointer;
+    visibility: hidden;
+}
+#hideBtnWithdraw{
+    position: absolute;
+    top: 10.5vw;
+    left: 85.5vw;
+    z-index: 20;
+    cursor: pointer;
+    visibility: hidden;
+}
+.hideBtn:hover{
+    background-color: #f81c1c;
+    color: white ;
+}
+#iconcontphone{
+    background-color: #005EFF;
+    width: 75vw;
+    height: 10vw;
+    border-radius: 10vw;
+    margin: -14vw 12.5vw;
+    position: absolute;
+    display: block;
+}
+#header{
+    background-color: #0006B2;
+    height: 35vw;
+    width: 100vw;
+    border-radius: 0vw 0vw 12vw 12vw;}
+#iconsOne{
+    height: 7.5vw;
+    width: 7.5vw;
+    position: absolute;
+    top: 22vw;
+    left: 21vw;
+    z-index: 10;
+    cursor: pointer;
+    visibility: visible;
+}
+
+#iconsTwo{
+    height: 7.5vw;
+    width: 7.5vw;
+    position: absolute;
+    top: 22vw;
+    left: 38vw;
+    z-index: 10;
+    cursor: pointer;
+}
+
+#iconsThree{
+    height: 7.5vw;
+    width: 7.5vw;
+    position: absolute;
+    top: 22.5vw;
+    left: 55.5vw;
+    z-index: 10;
+    cursor: pointer;
+}
+#iconsFour{
+    height: 7.5vw;
+    width: 7.5vw;
+    position: absolute;
+    top: 22.5vw;
+    left: 71vw;
+    z-index: 10;
+    cursor: pointer;
+}
+
+
+/* BACKGROUND AND GREETING*/
+
+#backgroundVector{
+visibility: hidden;}
+#day{
+    position: absolute;
+    color: #ffffff;
+    width: 13.64vw;
+    height: 3vw;
+    text-align: center;
+    border-radius: 0vw 0vw 2vw 2vw;
+    top:5vw;
+    left: 71.8vw;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2vw;
+    z-index: 20;
+}
+#timeForEmployee{
+    position: absolute;
+    padding: 1vw;
+    color: #ffffff;
+    top: 0vw;
+    left: 75vw;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 3vw;
+    z-index: 20;
+    }
+#dateForEmployee{
+    position: absolute;
+    color: #ffffff;
+    width: 13.64vw;
+    height: 3vw;
+    text-align: center;
+    border-radius: 0vw 0vw 2vw 2vw;
+    top:5vw;
+    left: 78.6vw;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2vw;
+    z-index: 20;}
+#containerBlue{
+    background-color: #005EFF;
+    position: absolute;
+    color: #ffffff;
+    width: 16vw;
+    height: 14vw;
+    border-radius: 0vw 0vw 2vw 2vw;
+    top:-5vw;
+    left: 74.6vw;
+    z-index: 18;
+}
+
+#greeting{
+     position: absolute;
+     top: 2vw;
+     left: 15vw;
+     font-size: 3vw;
+     color: #005EFF;
+     font-family: 'Montserrat', sans-serif;}
+#introName{
+    position: absolute;
+    top: 2vw;
+    left: 31vw;
+    font-size: 3vw;
+    color: #005EFF;
+    font-family: 'Montserrat', sans-serif;
+}
+#quotes{
+    position: absolute;
+    top: 6vw;
+    left: 15vw;
+    font-size: 1.5vw;
+    color: rgb(116, 116, 116);
+    font-family: 'Montserrat', sans-serif;
+    z-index: 18;}
+#toLoad{
+    width: 4vw;
+    height: 4vw;
+    position: absolute;
+    top: 4vw;
+    left: 1.5vw;
+    text-align: center;
+    cursor: pointer;
+    color: rgb(255, 255, 255);
+
+}
+/*MODAL*/
+#modal{
+position: absolute;
+background-color: rgb(1, 10, 51);
+opacity: 60%;
+background-size: cover;
+height: 110%;
+width: 100%;
+z-index: 25;
+visibility: hidden;
+}
+#modalBox{
+z-index: 26;
+position: absolute;
+background-color: white;
+height: 11vw;
+width: 25vw;
+border-radius: 2vw;
+top: 15vw;
+left: 37vw;
+font-family: 'Montserrat', sans-serif;
+color: #005EFF;
+font-size: 1.7vw;
+text-align: center;
+padding-top: 4vw;
+padding-left: 1.5vw;
+padding-right: 1.5vw;
+padding-top: 1vw;
+visibility: hidden;
+
+}
+#closeModal{
+text-align: center;
+z-index: 26;
+position: absolute;
+background-color: #005EFF;
+width: 5vw;
+height: 1.5vw;
+top: 23.5vw;
+left: 48.6vw;
+border-radius: 2vw;
+color: white;
+font-family: 'Montserrat', sans-serif;
+padding-top: .5vw;
+visibility: hidden;
+}
+#titleSearch{
+    color: #ffffff;
+    background-color: #005EFF;
+    width:65vw;
+    height:7vw;
+    margin-top: 4vw;
+    text-align: center;
+    font-size: 4vw;                     /********need to hidden********/
+    border-radius: 7vw;
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    border: none;
+    padding-top: 2vw;
+    z-index: 1;
+    display: block;
+}
+#searchIconContainer{
+    background-color: #ffffff;
+    width: 9vw;
+    height: 20vw;
+    position: absolute;
+    left: 20vw;
+    top: 21.3vw;
+    border-radius: 9vw;
+    display: none;
+}
+#searchFormContainer{
+    display: flex;
+    flex-direction:column;
+    background-color: #ffffff;
+    width: 75vw;
+    height: 65vw;                   /********need to hidden********/
+    padding:1vw;
+    border-radius: 8vw;
+    box-shadow: 1.5vw 1.5vw 2vw 0 rgba(0, 0, 0, .16);
+    position: absolute;
+    left: 11vw;
+    top: 35vw;
+    z-index: 1;
+    visibility: hidden;
+    align-items: center ;}
+#searchbutton{
+    color: #ffffff;
+    background-color: #005EFF;
+    width:18vw;
+    height:7vw;
+    font-size: 3vw;                     /********need to hidden********/
+    border-radius: 7vw;
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    margin-top: 53vw;
+    border: none;
+    z-index: 1;
+}
+#searchFirstName{
+    height:7vw;
+    width: 55vw;
+    color: rgb(116, 116, 116);
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 7vw;
+    text-align: center;
+    margin-top: 18vw;
+    border: .15vw solid rgb(177, 177, 177);
+    z-index: 1;
+    position: absolute;}
+#searchLastName{
+    height:7vw ;
+    width: 55vw;
+    color: rgb(116, 116, 116);
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 7vw;
+    text-align: center;
+    margin-top: 30vw;
+    border: .15vw solid rgb(177, 177, 177);
+    z-index: 1;
+    position: absolute;}
+
+#searchAccount{
+    padding-left: 3vw;
+    height:7vw ;
+    width: 53vw;
+    color: rgb(116, 116, 116);
+    font-family: 'Montserrat', sans-serif;
+    border-radius: 7vw;
+    text-align: center;
+    margin-top: 42vw;
+    border: .15vw solid rgb(177, 177, 177);
+    z-index: 1;
+    position: absolute;}
+#searchResult{
+    border-radius: 2vw 2vw 2vw 2vw;
+    background-color: #ffffff;
+    width: 60.15vw;
+    box-shadow: .3vw .3vw .3vw 0 rgba(0, 0, 0, .20);
+    font-family: 'Montserrat', sans-serif;
+    border: .3vw solid #005EFF ;
+    position: absolute;
+    font-size: 1vw;
+    top: 19vw;
+    padding: 1vw 1vw 1vw 1vw;
+    text-align: center;
+    visibility: hidden;
+}
+#getBalance{
+    border-radius: 2vw 2vw 2vw 2vw;
+    padding-top: 1vw;
+    background-color: #ffffff;
+    width: 59.5vw;
+    height: 2.5vw;
+    box-shadow: .3vw .3vw .3vw 0 rgba(0, 0, 0, .20);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1vw;
+    position: absolute;
+    top: 15vw;
+    border: .3vw solid #005EFF  ;
+    margin-top: -.2vw;
+    text-align: center;
+    left: 20vw;
+    visibility: hidden;
+
+
+}
+
+/*** HISTORY FORM ***/
+
+/**** HISTORY BOXES AND LABEL****/
+
+#historyContainer{
+    background-color: #ffffff;
+    width: 7.5vw;
+    height: 20vw;
+    font-size: 1vw;
+    padding:1vw;
+    border-radius: 9vw;
+    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
+    display: flex;
+    flex-direction: row;
+    z-index: 2;                         /********need to hidden********/
+    position: absolute;
+    margin-left: 37vw;
+    top: 21.5vw;
+    visibility: hidden;}
+#historyLabel{
+    background-color: #005EFF;
+    border-radius: 7vw;
+    align-items: center;
+    width:93vw;
+    height:7vw;
+    font-size: 2.5vw;
+    display: flex;
+    flex-direction: row;
+    margin: 18vw 0vw 0vw -35vw;
+    z-index: 4;
+    position: absolute;
+    word-spacing: -2vw;
+} 
+.span{
+    display: flex;
+    margin: 0vw 0vw 0vw 3.5vw;  
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    z-index: 2;
+}
+.span1{
+    display: flex;
+    margin: 0vw 2vw 0vw 10vw; 
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    z-index: 2;
+
+}
+.span2{
+    display: flex;
+    margin: 0vw 0vw 0vw 11vw; 
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    z-index: 2;
+}
+.span4{
+    display: flex;
+    margin: 0vw 2vw 0vw 9vw; 
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    z-index: 2;
+}
+.span5{
+    display: flex;
+    margin: 0vw 0vw 0vw 10vw;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    z-index: 2;
+}
+
+/**** HISTORY INPUTS GOES HERE ****/
+#historyInput{
+    padding: 15vw 2vw 5vw 3vw;
+    background-color: #ffffff;
+    width: 97vw;
+    font-size: 1vw;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 1.5vw 1.5vw 2vw 0 rgba(0, 0, 0, .16);
+    border-radius: 8vw;
+    font-size: 2vw;
+    display: flex;
+    flex-direction:column;
+    margin: 12.5vw 0vw 0vw -37vw;
+    z-index: 3;
+    position: absolute;
+}
+#historyInput tr{
+    width: 97vw;
+    display: flex;
+    margin-left: -3vw;
+    justify-content: space-evenly; 
+    align-content: center;
+    justify-self: center;
+}
+tr td{
+    background-color: #ffffff;
+    width: 15vw;
+    text-align: center;
+
+}
+
+.divDetails{
+    width: 6vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    text-align: left;
+    padding-left: 1.7vw;
+    display: flex;
+    z-index: 3;
+    }
+.divDetails1{
+    width: 11vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex ;
+    z-index: 3;
+    margin-left: 6.5vw;
+
+}
+.divDetails2{
+    width: 13vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex;
+    z-index: 3;
+    margin-left: .4vw;
+    
+}
+.divDetails3{
+    width: 7vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex;
+    z-index: 3;
+    padding-left: 2vw;
+
+}
+.divDetails4{
+    width: 7vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex;
+    z-index: 3;
+    padding-left: 2.4vw;
+}
+.divDetails5{
+    width: 7vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex;
+    z-index: 3;
+    padding-left: 2.2vw;
+}
+.divDetails6{
+    width: 5vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex;
+    z-index: 3;
+    padding-left: 4vw;
+}
+.divDetails7{
+    width: 7vw;
+    height: 20vw;
+    color: #6b6b6b;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .75vw;
+    display:flex;
+    z-index: 3;
+    padding-left: 4vw;
+}
+
+/***** ADD USER FORM *****/
+
+#aduserIconContainer{
+    background-color: white;
+    width: 7.5vw;
+    height: 20vw;
+    font-size: 1vw;
+    padding:1vw;
+    border-radius: 5vw;
+    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
+    z-index: 3;
+    position: absolute;                     /********need to hidden********/
+    top: 21.5vw;
+    left: 54vw;
+    visibility: hidden;
+}
+#aduserInputContainer{
+    width: 75vw;
+    height: 88vw; 
+    background-color: rgb(255, 255, 255);
+    border-radius: 8vw;
+    margin-left: 13vw;
+    display: flex;
+    flex-direction: column;                 /********need to hidden********/
+    align-items: center;
+    z-index: 4;
+    position: absolute;
+    box-shadow: 1.5vw 1.5vw 2vw 0 rgba(0, 0, 0, .16);
+    visibility: hidden;
+}
+#titleAduser{
+    width:63.5vw;
+    height:6.7vw;
+    background-color: #005EFF;
+    border-radius: 7vw;
+    margin-top: 5vw;
+    text-align: center;
+    padding: 1.5vw 0vw 0vw 1.5vw;
+    font-size: 4vw;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 5vw;
+    z-index: 4;
+}
+.aduserInputs{
+    height:6.5vw;
+    width: 55vw;
+    border-radius: 7vw;
+    margin-bottom: 4.3vw;
+    text-align: center;
+    z-index: 4;
+    border: .15vw solid rgb(177, 177, 177);
+    padding: .5vw 0vw .5vw 1vw;
+    font-size: 2.5vw;
+    font-family: 'Montserrat', sans-serif;
+    color: rgb(49, 47, 47);
+}
+#dateofBirthAduser{
+    width: 40vw;
+    display: flex;
+    align-self: flex-start;
+    margin-left: 9vw;
+    padding: .5vw 2vw .5vw 14vw;
+    color: rgb(49, 47, 47);
+}
+#dateofBirth{
+    width: 30vw;
+    display: flex;
+    align-self: flex-start;
+    margin: 0vw 0vw 0vw 27vw;
+    font-size:3.5vw;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: 1vw;
+    color: rgb(49, 47, 47);
+}
+#initialDeposit{
+    width: 30vw;
+    display: flex;
+    align-self: flex-start;
+    margin: 0vw 0vw 0vw 26vw;
+    font-size:3.5vw;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: 1vw;
+    color: rgb(49, 47, 47);
+}
+#initialDepositAduser{
+    width: 47vw;
+    padding: .5vw 3vw .5vw 6vw;
+}
+#addButton{
+    background-color: #005EFF;
+    width:18vw;
+    height:7vw;
+    border-radius: 7vw;
+    font-size: 3vw;
+    margin-top: -1vw;
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+    border: none;
+    
+}
+
+/******* TRANSACTION ******/
+
+/********* DEPOSIT AND WITHDRAW ***********/
+#transacIconContainer{
+    background-color: #ffffff;
+    width: 7.5vw;
+    height: 20vw;
+    font-size: 1vw;
+    padding:1vw;
+    border-radius: 9vw;
+    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
+    z-index: 3;
+    position: absolute;
+    margin: -13.5vw 0vw 0vw 70.3vw ;
+    visibility: hidden;                    /********need to hidden********/
+}
+/* #transaction{
+    display: flex;
+    flex-direction:column;
+    background-color: #ffffff;
+    width: 75vw;
+    height: 65vw;
+    margin: 0vw 0vw 0vw 12.5vw;
+    box-shadow: 1.5vw 1.5vw 2vw 0 rgba(0, 0, 0, .16);
+    border-radius: 8vw;
+    z-index: 4;
+    position: absolute;
+    display: block;
+} */
+#depoContainer{
+    padding-top: 6vw;
+    width: 75vw;
+    height: 83vw;
+    background-color: rgb(255, 255, 255);
+    border-radius: 7vw;
+    margin: 0vw 0vw 0vw 12.5vw;
+    display: flex;
+    flex-direction: column;             /********need to hidden********/
+    align-items: center;
+    z-index: 5;
+    position: absolute;
+    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
+    visibility: hidden;
+}
+#withdrawForm{
+    padding-top: 6vw;
+    width: 79vw;
+    height: 27vw;
+    background-color: rgb(255, 255, 255);
+    border-radius: 0vw 2vw 2vw 2vw;
+    margin-left: 8vw;
+    margin-top: -35.7vw;
+    display: flex;
+    flex-direction: column;             /********need to hidden********/
+    align-items: center;
+    z-index: 5;
+    position: absolute;
+    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
+    visibility: hidden;
+}
+#titleTransac{
+    display: flex;
+    flex-direction:column;
+    width: 75vw;
+    height: 50vw;
+    background-color: #ffffff;
+    border-radius: 8vw;
+    margin:0vw 0vw 0vw 12.5vw;
+    text-align: center;
+    box-shadow: 1.5vw 1.5vw 2vw 0 rgba(0, 0, 0, .16);
+    font-family: 'Montserrat', sans-serif;
+    position: absolute;
+    z-index: 6;
+    visibility: hidden;
+}
+.transacInputs {
+    height:6.5vw;
+    width: 55vw;
+    border-radius: 7vw;
+    margin-bottom: 4.3vw;
+    text-align: center;
+    z-index: 4;
+    border: .15vw solid rgb(177, 177, 177);
+    padding: .5vw 0vw .5vw 1vw;
+    font-size: 2.5vw;
+    font-family: 'Montserrat', sans-serif;
+    color: rgb(49, 47, 47);
+}
+.numberLabel{
+    width: 60vw;
+    display: flex;
+    align-self: flex-start;
+    margin: 0vw 0vw 0vw 23vw;
+    font-size:3.5vw;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: 1vw;
+    color: rgb(49, 47, 47);
+}
+#depositBtn{
+    box-shadow: 1vw 1vw .7vw 0 rgba(0, 24, 161, 0.281);
+    width:65vw;
+    height:6.5vw;
+    border-radius: 7vw;
+    font-size: 4vw;  
+    color: rgb(255, 255, 255);
+    padding-top: 1.5vw;
+    margin:7vw 0vw 0vw 4vw;
+    position: absolute;
+    z-index: 8;
+    left: 0vw;
+    cursor: pointer;
+}
+#WithdrawBtn{
+    box-shadow: 1vw 1vw .7vw 0 rgba(0, 24, 161, 0.281);
+    border-radius: 7vw;
+    font-size: 4vw;
+    width:65vw;
+    height:6.5vw;
+    color: rgb(255, 255, 255);
+    padding-top: 1.5vw;
+    margin:20vw 0vw 0vw -21vw;
+    position: absolute;
+    z-index: 8;
+    left: 25vw;
+    cursor: pointer;
+}
+#TransferBtn{
+    box-shadow: 1vw 1vw .7vw 0 rgba(0, 24, 161, 0.281);
+    border-radius: 7vw;
+    font-size: 4vw;
+    width:65vw;
+    height:6.5vw;
+    color: rgb(255, 255, 255);
+    padding-top: 1.5vw;
+    margin: 33vw 0vw 0vw -48vw;
+    position: absolute;
+    z-index: 8;
+    left: 52vw;
+    cursor: pointer;
+}
+.depoButton, .withdrawButton, .transferButton{
+    background-color: #005EFF;
+    width:23vw;
+    height:7vw;
+    border-radius: 7vw;
+    font-size: 3vw;
+    margin:48vw 0vw 0vw 0vw;
+    font-family: 'Montserrat', sans-serif;
+    color: #ffffff;
+    border: none;
+}
+.depoButton{
+    position: absolute;
+    top: 29vw;
+    z-index: 8;
+}
+.withdrawButton{
+    position: absolute;
+    top: 29vw;
+    z-index: 9;
+}
+.transferButton{
+    position: absolute;
+    top: 23vw;
+    left: -7vw;
+    z-index: 10;
+}
+
+
+/************ TRANSFER **************/
+
+#transferContainer{
+    background-color: #ffffff;
+    padding-top: 5.5vw;
+    width: 79vw;
+    height: 28vw;
+    border-radius: 0vw 2vw 2vw 2vw;
+    margin-left: 8vw;
+    margin-top: -35.7vw;
+    display: flex;
+    flex-direction: row;                 /********need to hidden********/
+    align-items: center;
+    z-index: 6;
+    position: absolute;
+    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16); 
+    visibility: hidden;}
+#userTransferForm{
+    width: 39.5vw;
+    height: 33vw;
+    border-radius: 0vw 2vw 2vw 0vw;
+    margin-left: 1.8vw;
+    margin-top: 7vw;
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    z-index: 7;
+    position: absolute;
+    font-family: 'Montserrat', sans-serif;
+}
+#receiverTransferForm{
+    width: 39.5vw;
+    height: 33vw;
+    border-radius: 0vw 2vw 2vw 0vw;
+    margin-left: 41vw;
+    margin-top: 7vw;
+    display: flex;
+    flex-direction: column;
+    align-items:flex-start;
+    z-index: 7;
+    position: absolute;
+    font-family: 'Montserrat', sans-serif;
+}
+.transacInputs1, .transacInputs2{
+    width: 34vw;
+    height: 1vw;
+    border-radius: 1vw;
+    z-index: 7;
+    border: .15vw solid rgb(177, 177, 177);
+    padding: .5vw 0vw .5vw 1vw;
+    font-size: .8vw;
+    font-family: 'Montserrat', sans-serif;
+    color: rgb(49, 47, 47);
+    margin-bottom: 1vw;
+    padding-right: 1vw;
+}
+.numberLabel2, .numberLabel1, .receiverDetails, .userDetails1, .userDetails{
+    width: 10vw;
+    display: flex;
+    align-self: flex-start;
+    margin-left: 1vw;
+    font-size: 1vw;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: .5vw;
+    color: rgb(49, 47, 47);
+}
+.receiverDetails, .userDetails1{
+    width: 20vw;
+    font-size: 1.5vw;
+    font-family: 'Montserrat', sans-serif;}
+.userDetails{
+    width:40.5vw;
+    height:6.7vw;
+    background-color: #005EFF;
+    border-radius: 7vw;
+    margin: -1vw 0vw 0vw 6vw;
+    text-align: center;
+    padding: 1.5vw 0vw 0vw 23.5vw;
+    font-size: 4vw;
+    color: #ffffff;
+    font-family: 'Montserrat', sans-serif;
+    margin-bottom: 5vw;
+}
+#sampleBtn{
+    width: 3vw;
+    height: 3vw;
+    background-color: black;
+    display: block;
+    position: absolute;
+    z-index: 30;
+}
