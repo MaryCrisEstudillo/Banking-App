@@ -1,0 +1,123 @@
+/* =========================================================
+   PIGGY BANK — log in
+   ========================================================= */
+:root{
+    --blue:      #005EFF;
+    --blue-deep: #0006B2;
+    --ink:       #312f2f;
+    --font: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --shadow: .15rem .15rem .5rem rgba(2, 23, 116, .55);
+    --field-h: 2.9rem;
+}
+
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ -webkit-text-size-adjust: 100%; }
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: var(--font);
+    color: var(--ink);
+    background: #0b1730 url(images/buildings.png) center / cover no-repeat;
+}
+
+img{ display: block; max-width: 100%; }
+
+input{ font: inherit; }
+
+.logInShell{
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1rem, 3vh, 2rem);
+    padding: clamp(1.5rem, 5vw, 3rem) 1.25rem;
+}
+
+#piggyBank{
+    width: clamp(7rem, 20vw, 13rem);
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+#containerFormLogIn{
+    width: min(100%, 22rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(.75rem, 2vh, 1.15rem);
+}
+
+.logInInputs{
+    width: 100%;
+    height: var(--field-h);
+    border: none;
+    border-radius: 999px;
+    padding: 0 1.25rem;
+    font-size: .95rem;
+    color: var(--ink);
+    background: #fff;
+    box-shadow: var(--shadow);
+}
+.logInInputs::placeholder{ color: #8b8b8b; }
+.logInInputs:focus{
+    outline: 3px solid rgba(255, 255, 255, .85);
+    outline-offset: 2px;
+}
+
+/* Password + "show password" toggle sit on one line */
+.passwordRow{
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+}
+.passwordRow .logInInputs{ flex: 1 1 auto; min-width: 0; }
+
+#checkBox{
+    flex: 0 0 auto;
+    width: 1.85rem;
+    height: 1.85rem;
+    margin: 0;
+    background-color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: background-color .15s ease;
+}
+#checkBox:checked{ background-color: var(--blue); }
+#checkBox:focus-visible{ outline: 3px solid #fff; outline-offset: 2px; }
+
+#logIn{
+    align-self: center;
+    margin-top: .35rem;
+    min-width: 7.5rem;
+    height: var(--field-h);
+    padding: 0 1.75rem;
+    background-color: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: background-color .15s ease, transform .15s ease;
+}
+#logIn:hover{ background-color: var(--blue-deep); }
+#logIn:active{ transform: translateY(1px); }
+
+/* Short landscape phones: let the page scroll instead of squashing */
+@media (max-height: 480px){
+    .logInShell{ justify-content: flex-start; }
+    #piggyBank{ width: 5.5rem; }
+}
+
+@media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{ transition-duration: .01ms !important; }
+}
