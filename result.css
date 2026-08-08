@@ -1,882 +1,1066 @@
-::-webkit-scrollbar{
-    display: none;}
-*{margin: 0;
-outline: none;}
+/* =========================================================
+   PIGGY BANK — teller dashboard
+   Layout: CSS grid shell (rail + main), panels stacked in a
+   single grid cell so JS can keep toggling `visibility`.
+   ========================================================= */
 
+/* ---------- Design tokens ---------- */
+:root{
+    --blue:        #005EFF;
+    --blue-deep:   #0006B2;
+    --blue-tint:   #e9f0ff;
+    --ink:         #312f2f;
+    --muted:       #747474;
+    --grey:        #6b6b6b;
+    --line:        #b1b1b1;
+    --hairline:    #eef1f5;
+    --danger:      #d80e0e;
+    --white:       #ffffff;
 
-/* HEADER AND ICONS*/
-.hideBtn{
-    background-color: #ffffff;
-    color: #d80e0e;
-    width: 1.5vw;
-    height: 1.3vw;
-    text-align: center;
-    font-family: 'Montserrat', sans-serif;
-    border-radius: 1.5vw;
-    font-size: .8vw;
-    margin-top: 2vw;
-    padding-top: .2vw;
-    position: absolute;
-    border: .5vw solid white;
-    box-shadow: .5vw 0vw .5vw 0 rgba(0, 0, 0, 0.16);
-}
-#hideBtnSearch{
-    position: absolute;
-    top: 12.1vw;
-    left: 81vw;
-    z-index: 20;
-    cursor: pointer;
-    visibility: hidden;
+    /* channel forms of the brand colours, so translucent uses (focus rings,
+       scrollbar, scrim) track the palette instead of drifting from it */
+    --blue-rgb:    0, 94, 255;
+    --danger-rgb:  216, 14, 14;
+    --scrim-rgb:   1, 10, 51;
 
-}
-#hideBtnHistory{
-    position: absolute;
-    top: 19vw;
-    left: 69.5vw;
-    z-index: 20;
-    cursor: pointer;
-    visibility: hidden;
-}
-#hideBtnAduser{
-    position: absolute;
-    top: 11vw;
-    left: 40.5vw;
-    z-index: 20;
-    cursor: pointer;
-    visibility: hidden;
-}
-#hideBtnWithdraw{
-    position: absolute;
-    top: 10.5vw;
-    left: 85.5vw;
-    z-index: 20;
-    cursor: pointer;
-    visibility: hidden;
-}
-.hideBtn:hover{
-    background-color: #f81c1c;
-    color: white ;
+    --font: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+    --rail:        5.5rem;
+    --pad:         clamp(1rem, 2.2vw, 2.25rem);
+    --gap:         clamp(.75rem, 1.4vw, 1.25rem);
+
+    --r-lg:        1.5rem;
+    --r-md:        1rem;
+    --r-pill:      999px;
+
+    --shadow:      0 .5rem 1.5rem rgba(0, 0, 0, .14);
+    --shadow-sm:   0 .25rem .75rem rgba(0, 0, 0, .12);
+
+    --field-h:     2.75rem;
+    --rail-item:   3.4rem;
+    --history-min: 38rem;
+    --history-cols: minmax(6.5rem, 1.1fr) minmax(8rem, 1.5fr)
+                    minmax(5.5rem, .9fr) minmax(4.5rem, .8fr) minmax(6rem, 1fr);
 }
 
+/* ---------- Reset ---------- */
+*, *::before, *::after{ box-sizing: border-box; }
+
+html{ -webkit-text-size-adjust: 100%; }
+
+body{
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-family: var(--font);
+    font-size: clamp(.875rem, .35vw + .8rem, 1rem);
+    color: var(--ink);
+    background: var(--white);
+    overflow-x: hidden;
+}
+
+img{ display: block; max-width: 100%; }
+
+input, button, select, textarea{ font: inherit; color: inherit; }
+
+h1, h2, h3, p{ margin: 0; }
+
+table{ border-collapse: collapse; }
+
+/* Thin, unobtrusive scrollbars (the old sheet hid them entirely,
+   which made overflowing panels impossible to scroll on desktop). */
+*{ scrollbar-width: thin; scrollbar-color: rgba(var(--blue-rgb), .35) transparent; }
+::-webkit-scrollbar{ width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb{ background: rgba(var(--blue-rgb), .3); border-radius: var(--r-pill); }
+::-webkit-scrollbar-track{ background: transparent; }
+
+:focus-visible{
+    outline: 3px solid var(--blue);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* =========================================================
+   SHELL
+   ========================================================= */
+.app{
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+/* ---------- Navigation rail ----------
+   The blue bar sits BEHIND the panels (z-index 0) so a form can run across it,
+   while the icons sit ABOVE them (z-index 31) and stay usable. That is why the
+   bar and the icons are separate elements rather than nested.                */
 #header{
-    background-color: #005EFF;
-    height: 48.7vw;
-    width: 8vw;
-    border-radius: 0vw 3.5vw 3.5vw 0vw;}
+    grid-column: 1;
+    grid-row: 1;
+    align-self: stretch;
+    background: var(--blue);
+    border-radius: 0 var(--r-lg) var(--r-lg) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.25rem .5rem 3rem;
+    z-index: 2;                    /* above the forms: only the open menu's tab
+                                      is allowed to break the blue */
+}
+
+/* the wordmark only fits once the rail becomes a full-width header */
+.brandName{ display: none; }
+
+#toLoad{
+    position: sticky;
+    top: 1.25rem;
+    width: clamp(2.5rem, 3vw, 3.5rem);
+    aspect-ratio: 1;
+    object-fit: contain;
+    cursor: pointer;
+    transition: transform .18s ease;
+}
+#toLoad:hover{ transform: scale(1.08); }
+
+/* Anchored to the stage, not the page, so the first icon lines up with the top
+   of whichever form is open instead of floating at its own height. */
+.rail-items{
+    position: absolute;
+    left: calc(-1 * (var(--rail) + var(--pad)));
+    top: .45rem;
+    width: var(--rail);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1rem, 3.5vh, 2.25rem);
+    z-index: 31;
+}
+
+/* Blue pill that sits behind the icon row on small screens */
+#iconcontphone{ display: none; }
+
+/* Inactive icons sit bare on the blue rail. The open menu gets a white tab that
+   reaches the rail's left edge and runs into the form, curved on the left so it
+   reads as the form's own end rather than a cut. Drawn as a pseudo-element so
+   border-radius applies — a mask cut can only be square-cornered. */
+.rail-item{
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: var(--rail-item);
+    height: var(--rail-item);
+    border-radius: 50%;
+    z-index: 1;
+    transition: background-color .18s ease;
+}
+
+.rail-item.isActive::before{
+    --tab-inset: calc((var(--rail) - var(--rail-item)) / 2);
+    content: "";
+    position: absolute;
+    top: -.5rem;
+    bottom: -.5rem;
+    left: calc(-1 * var(--tab-inset));            /* out to the rail's left edge */
+    /* stops at the rail's right edge: the form already runs underneath from
+       x=0, so its white resumes there — reaching further would cover content */
+    right: calc(-1 * var(--tab-inset) - 2px);
+    background: var(--white);
+    border-radius: var(--r-pill) 0 0 var(--r-pill);   /* half-round left end */
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* The icons are drawn from their own artwork used as a mask, so the glyph
+   colour is set here rather than by swapping in a second image file. */
+.rail-icon{
+    width: clamp(1.85rem, 2.4vw, 2.75rem);
+    aspect-ratio: 1;
+    cursor: pointer;
+    background-color: var(--white);
+    -webkit-mask-position: center;
+            mask-position: center;
+    -webkit-mask-repeat: no-repeat;
+            mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+            mask-size: contain;
+    transition: background-color .18s ease, transform .18s ease;
+}
 #iconsOne{
-    height: 3vw;
-    width: 3vw;
-    position: absolute;
-    top: 14vw;
-    left: 2vw;
-    z-index: 10;
-    cursor: pointer;
-    visibility: visible;
+    -webkit-mask-image: url("images/searchfix.png");
+            mask-image: url("images/searchfix.png");
 }
-
 #iconsTwo{
-    height: 3vw;
-    width: 3vw;
-    position: absolute;
-    top: 22vw;
-    left: 2vw;
-    z-index: 10;
-    cursor: pointer;
+    -webkit-mask-image: url("images/historyfix.png");
+            mask-image: url("images/historyfix.png");
 }
-
 #iconsThree{
-    height: 3vw;
-    width: 3vw;
-    position: absolute;
-    top: 30vw;
-    left: 2vw;
-    z-index: 10;
-    cursor: pointer;
+    -webkit-mask-image: url("images/add userfix.png");
+            mask-image: url("images/add userfix.png");
 }
 #iconsFour{
-    height: 3vw;
-    width: 3vw;
-    position: absolute;
-    top: 38vw;
-    left: 2vw;
-    z-index: 10;
-    cursor: pointer;
+    -webkit-mask-image: url("images/transactionfix.png");
+            mask-image: url("images/transactionfix.png");
 }
 
-
-/* BACKGROUND AND GREETING*/
-
-#backgroundVector{
-    height: 45vw;
-    width: 70vw;
-    margin-left: 14vw;
-    margin-top: 1vw;
-    z-index: -10;
-    position: fixed;}
-#day{
-    position: absolute;
-    color: #ffffff;
-    width: 13.64vw;
-    height: 3vw;
-    text-align: center;
-    border-radius: 0vw 0vw 2vw 2vw;
-    top:5vw;
-    left: 71.8vw;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.2vw;
-    z-index: 20;
-}
-#timeForEmployee{
-    position: absolute;
-    padding: 1vw;
-    color: #ffffff;
-    top: 0vw;
-    left: 75.5vw;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 3vw;
-    z-index: 20;
-    }
-#dateForEmployee{
-    position: absolute;
-    color: #ffffff;
-    width: 13.64vw;
-    height: 3vw;
-    text-align: center;
-    border-radius: 0vw 0vw 2vw 2vw;
-    top:5vw;
-    left: 77.5vw;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1.2vw;
-    z-index: 20;}
-#containerBlue{
-    background-color: #005EFF;
-    position: absolute;
-    color: #ffffff;
-    width: 16vw;
-    height: 14vw;
-    border-radius: 0vw 0vw 2vw 2vw;
-    top:-5vw;
-    left: 74.6vw;
-    z-index: 18;
+.rail-icon:hover{ transform: scale(1.12); }
+.rail-icon.isActive{
+    background-color: var(--blue);   /* app blue on the white tab */
+    transform: scale(1.12);
 }
 
-#greeting{
-     position: absolute;
-     top: 2vw;
-     left: 15vw;
-     font-size: 3vw;
-     color: #005EFF;
-     font-family: 'Montserrat', sans-serif;}
-#introName{
-    position: absolute;
-    top: 2vw;
-    left: 31vw;
-    font-size: 3vw;
-    color: #005EFF;
-    font-family: 'Montserrat', sans-serif;
+/* ---------- Main column ---------- */
+.main{
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 0 var(--pad) var(--pad);
 }
+
+.topbar{
+    position: relative;
+    z-index: 1;                    /* the artwork is centred now, so keep the
+                                      greeting painting above it */
+    display: flex;
+    align-items: flex-start;
+    gap: var(--gap);
+    padding-top: var(--pad);
+}
+
+.greet{ flex: 1 1 auto; min-width: 0; }
+
+.greet-line{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 .4ch;
+    align-items: baseline;
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+#greeting, #introName{
+    font-size: clamp(1.5rem, 2.6vw, 2.6rem);
+    color: var(--blue);
+}
+
 #quotes{
-    position: absolute;
-    top: 6vw;
-    left: 15vw;
-    font-size: 1.5vw;
-    color: rgb(116, 116, 116);
-    font-family: 'Montserrat', sans-serif;
-    z-index: 18;}
-#toLoad{
-    width: 4vw;
-    height: 4vw;
-    position: absolute;
-    top: 4vw;
-    left: 1.5vw;
+    margin-top: .4rem;
+    max-width: 55ch;
+    color: var(--muted);
+    font-size: clamp(.8rem, .95vw, 1.05rem);
+}
+
+/* Clock card — hangs flush off the top edge, as in the original */
+#containerBlue{
+    flex: 0 0 auto;
+    background: var(--blue);
+    color: var(--white);
     text-align: center;
-    cursor: pointer;
-    color: rgb(255, 255, 255);
+    border-radius: 0 0 var(--r-lg) var(--r-lg);
+    margin-top: calc(var(--pad) * -1);
+    padding: .85rem clamp(1rem, 1.6vw, 1.75rem) 1rem;
+    min-width: clamp(10rem, 15vw, 14rem);
+}
 
+#timeForEmployee{
+    font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+    font-weight: 600;
+    line-height: 1.1;
 }
-/*MODAL*/
-#modal{
-position: absolute;
-background-color: rgb(1, 10, 51);
-opacity: 60%;
-background-size: cover;
-height: 110%;
-width: 100%;
-z-index: 25;
-visibility: hidden;
-}
-#modalBox{
-z-index: 26;
-position: absolute;
-background-color: white;
-height: 11vw;
-width: 25vw;
-border-radius: 2vw;
-top: 15vw;
-left: 37vw;
-font-family: 'Montserrat', sans-serif;
-color: #005EFF;
-font-size: 1.7vw;
-text-align: center;
-padding-top: 4vw;
-padding-left: 1.5vw;
-padding-right: 1.5vw;
-padding-top: 1vw;
-visibility: hidden;
 
+.clock-date{
+    display: flex;
+    justify-content: center;
+    gap: .4ch;
+    margin-top: .15rem;
+    font-size: clamp(.7rem, .9vw, .9rem);
+    opacity: .92;
 }
-#closeModal{
-text-align: center;
-z-index: 26;
-position: absolute;
-background-color: #005EFF;
-width: 5vw;
-height: 1.5vw;
-top: 23.5vw;
-left: 48.6vw;
-border-radius: 2vw;
-color: white;
-font-family: 'Montserrat', sans-serif;
-padding-top: .5vw;
-visibility: hidden;
+
+/* =========================================================
+   STAGE — every panel lives in the same grid cell
+   ========================================================= */
+.stage{
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;              /* never let a wide panel stretch the page */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: clamp(1rem, 2.5vw, 2rem);
 }
-#titleSearch{
-    display: none;
+
+/* Pinned to the viewport rather than the stage: as a fixed element it adds
+   nothing to scroll height, so it can be sized freely without ever producing a
+   scrollbar. Centred in the content area, clear of the rail. */
+#backgroundVector{
+    position: fixed;
+    top: 50%;
+    left: calc(50% + var(--rail) / 2);
+    transform: translate(-50%, -50%);
+    width: min(100vw, 96rem);
+    height: auto;
+    max-width: none;               /* the reset's max-width:100% would otherwise
+                                      pin it to the viewport and stop it scaling */
+    max-height: 92vh;
+    object-fit: contain;           /* keeps the artwork undistorted at any cap */
+    object-position: center;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
 }
-#searchFormContainer{
-    background-color: #ffffff;
-    width: 80vw;
-    height: 1.8vw;
-    top: 13.5vw;
-    font-size: 1vw;                     /********need to hidden********/
-    padding:1vw;
-    border-radius: 2vw;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
-    position: absolute;
-    left: .5vw;
-    top: 13.5vw;
-    z-index: 1;
-    visibility: hidden;}
-#searchbutton{
-    color: #ffffff;
-    background-color: #005EFF;
-    box-shadow: .3vw .3vw .3vw 0 rgba(0, 0, 0, .20);
-    width: 7vw;
-    height:1.8vw ;
-    left: 39vw;
-    top: 13.5vw;
-    font-size: 1vw;                     /********need to hidden********/
-    border-radius: 2vw;
-    font-family: 'Montserrat', sans-serif;
-    margin-left: 33vw;
-    position: absolute;
+
+/* Forms run across the rail and end flush with the left edge of the screen, so
+   the active icon sits on the form itself rather than beside it. */
+.panel{
+    grid-area: 1 / 1;
+    position: relative;
+    z-index: 1;                    /* above the blue rail, below the icons */
+    align-self: start;
+    margin-left: calc(-1 * (var(--rail) + var(--pad)));
+    width: calc(100% + var(--rail) + var(--pad));
+    min-width: 0;
+    pointer-events: none;          /* hidden panels must not swallow clicks */
+}
+/* Only real cards take clicks. Transparent layout wrappers stay click-through,
+   otherwise the always-visible .transac-stack covers the panels beneath it. */
+.panel > *{ pointer-events: auto; }
+.transac-stack{ display: grid; pointer-events: none; }
+.transac-stack > *{ pointer-events: auto; }
+
+.panel--adduser{ width: min(calc(100% + var(--rail) + var(--pad)), 40rem); }
+
+/* ---------- Shared field + button styling ---------- */
+#searchFirstName, #searchLastName, #searchAccount,
+.aduserInputs, .transacInputs,
+.transacInputs1, .transacInputs2{
+    width: 100%;
+    min-width: 0;
+    height: var(--field-h);
+    border: 1px solid var(--line);
+    border-radius: var(--r-pill);
+    padding: 0 1.1rem;
+    color: var(--ink);
+    background: var(--white);
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+#searchFirstName:focus, #searchLastName:focus, #searchAccount:focus,
+.aduserInputs:focus, .transacInputs:focus,
+.transacInputs1:focus, .transacInputs2:focus{
+    outline: none;
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(var(--blue-rgb), .16);
+}
+
+#searchbutton, #addButton,
+.depoButton, .withdrawButton, .transferButton{
+    height: var(--field-h);
+    padding: 0 clamp(1.25rem, 2.5vw, 2.25rem);
+    background: var(--blue);
+    color: var(--white);
     border: none;
-    top: 1vw;
-    z-index: 1;
+    border-radius: var(--r-pill);
+    font-weight: 600;
+    letter-spacing: .02em;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: background .15s ease, transform .15s ease;
 }
-#searchFirstName{
-    height:1.5vw ;
-    width: 20vw;
-    color: rgb(116, 116, 116);
-    font-family: 'Montserrat', sans-serif;
-    border-radius: 2vw;
-    padding-left: 1vw;
-    margin-left: 7vw;
-    border: .15vw solid rgb(177, 177, 177);
-    z-index: 1;
-    position: absolute;}
-#searchLastName{
-    height:1.5vw ;
-    width: 20vw;
-    color: rgb(116, 116, 116);
-    font-family: 'Montserrat', sans-serif;
-    border-radius: 2vw;
-    padding-left: 1vw;
-    margin-left: 30vw;
-    border: .15vw solid rgb(177, 177, 177);
-    z-index: 1;
-    position: absolute;
+#searchbutton:hover, #addButton:hover,
+.depoButton:hover, .withdrawButton:hover, .transferButton:hover{
+    background: var(--blue-deep);
 }
-#searchAccount{
-    height:1.5vw ;
-    width: 15vw;
-    margin-left: 53.1vw;
-    color: rgb(116, 116, 116);
-    font-family: 'Montserrat', sans-serif;
-    border-radius: 2vw;
-    padding-left: 1vw;
-    border: .15vw solid rgb(177, 177, 177);
-    z-index: 1;
-    position: absolute;}
-#searchResult{
-    border-radius: 2vw 2vw 2vw 2vw;
-    background-color: #ffffff;
-    width: 60.15vw;
-    box-shadow: .3vw .3vw .3vw 0 rgba(0, 0, 0, .20);
-    font-family: 'Montserrat', sans-serif;
-    border: .3vw solid #005EFF ;
-    position: absolute;
-    font-size: 1vw;
-    top: 19vw;
-    padding: 1vw 1vw 1vw 1vw;
+#searchbutton:active, #addButton:active,
+.depoButton:active, .withdrawButton:active, .transferButton:active{
+    transform: translateY(1px);
+}
+
+.section-title{
+    background: var(--blue);
+    color: var(--white);
+    border-radius: var(--r-pill);
     text-align: center;
-    left: 20vw;
+    padding: .7rem 1rem;
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+/* Close (X) button, anchored to the top-right of its panel */
+.hideBtn{
+    position: absolute;
+    top: -.6rem;
+    right: -.4rem;
+    z-index: 20;
+    width: 2rem;
+    height: 2rem;
+    display: grid;
+    place-items: center;
+    background: var(--white);
+    color: var(--danger);
+    border: 3px solid var(--white);
+    border-radius: 50%;
+    font-size: .8rem;
+    font-weight: 700;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    visibility: hidden;
+    transition: background .15s ease, color .15s ease;
+}
+.hideBtn:hover{ background: var(--danger); color: var(--white); }
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+#searchFormContainer{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .75rem;
+    background: var(--white);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow);
+    padding: .75rem 1rem;
     visibility: hidden;
 }
+
+#titleSearch{ display: none; }                          /* mobile-only heading */
+
+#searchFirstName, #searchLastName{ flex: 1 1 11rem; }
+#searchAccount{ flex: 1 1 9rem; }
+#searchbutton{ flex: 0 0 auto; }
+
 #getBalance{
-    border-radius: 2vw 2vw 2vw 2vw;
-    padding-top: 1vw;
-    background-color: #ffffff;
-    width: 59.5vw;
-    height: 2.5vw;
-    box-shadow: .3vw .3vw .3vw 0 rgba(0, 0, 0, .20);
-    font-family: 'Montserrat', sans-serif;
-    font-size: 1vw;
-    position: absolute;
-    top: 15vw;
-    border: .3vw solid #005EFF  ;
-    margin-top: -.2vw;
+    margin-top: 1rem;
+    background: var(--white);
+    border: 2px solid var(--blue);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm);
+    padding: .85rem 1rem;
     text-align: center;
-    left: 20vw;
+    font-size: .95rem;
     visibility: hidden;
-
-
 }
 
-/*** HISTORY FORM ***/
+#searchResult{
+    display: block;
+    width: 100%;
+    max-height: min(24rem, 45vh);
+    overflow-y: auto;
+    margin-top: .75rem;
+    background: var(--white);
+    border: 2px solid var(--blue);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow-sm);
+    padding: .5rem 1rem;
+    font-size: .9rem;
+    color: var(--grey);
+    visibility: hidden;
+}
+#searchResult tr{ display: block; border-bottom: 1px solid var(--hairline); }
+#searchResult tr:last-child{ border-bottom: none; }
+#searchResult td{
+    display: block;
+    padding: .6rem .25rem;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
 
-/**** HISTORY BOXES AND LABEL****/
-
+/* =========================================================
+   HISTORY / ACCOUNT LIST
+   ========================================================= */
 #historyContainer{
-    background-color: #ffffff;
-    width: 68.5vw;
-    height: 2vw;
-    font-size: 1vw;
-    padding:1vw;
-    border-radius: 2vw 2vw 0vw 2vw;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
     display: flex;
-    flex-direction: row;
-    z-index: 2;                         /********need to hidden********/
-    position: absolute;
-    margin-left: .5vw;
-    top: 21.2vw;
-    visibility: hidden;}
+    flex-direction: column;
+    gap: .5rem;
+    background: var(--white);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: .75rem;
+    overflow-x: auto;
+    visibility: hidden;
+}
+
+#historyLabel,
+#historyInput tr{
+    display: grid;
+    grid-template-columns: var(--history-cols);
+    gap: .5rem;
+    min-width: var(--history-min);
+    align-items: center;
+}
+
 #historyLabel{
-    background-color: #005EFF;
-    border-radius: 2vw;
-    height: 1.8vw;
-    width: 60vw;
-    padding-left: 1vw;
-    padding-top: .5vw;
-    font-size: .9vw;
-    display: flex;
-    flex-direction: row;
-    margin-left: 7vw;
-    z-index: 4;
-    position: absolute;
-    word-spacing: -2vw;
-} 
-.span{
-    display: flex;
-    margin-left: .8vw;  
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    z-index: 2;
+    background: var(--blue);
+    border-radius: var(--r-pill);
+    padding: .7rem 1.1rem;
+    font-size: clamp(.75rem, .9vw, .9rem);
+    font-weight: 600;
 }
-.span1{
-    display: flex;
-    padding-left: 7vw;
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    z-index: 2;
+#historyLabel span{ color: var(--white); }
 
-}
-.span2{
-    display: flex;
-    
-    padding-left: 7.5vw;
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    z-index: 2;
-}
-.span4{
-    display: flex;
-    
-    padding-left: 8vw; 
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    z-index: 2;
-}
-.span5{
-    display: flex;
-    
-    padding-left: 8vw; 
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    z-index: 2;
-}
-.span6{
-    display: flex;
-    
-    padding-left: 7.2vw; 
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    z-index: 2;
-}
-
-/**** HISTORY INPUTS GOES HERE ****/
 #historyInput{
-    background-color: #ffffff;
-    width: 63vw;
-    height: 21vw;
-    font-size: 1vw;
-    font-family: 'Montserrat', sans-serif;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
-    border-radius: 0vw 0vw 2vw 2vw;
-    font-size: .8vw;
-    display: flex;
-    flex-direction:column;
-    margin-top: 3vw;
-    margin-left: 6.5vw;
-    z-index: 3;
-    position: absolute;
+    display: block;
+    width: 100%;
+    max-height: min(26rem, 48vh);
+    overflow-y: auto;
+    font-size: clamp(.75rem, .85vw, .875rem);
+    color: var(--grey);
 }
 #historyInput tr{
-    width: 62vw;
-    display: flex;
-    margin-left: -1vw;
-    justify-content: space-evenly; 
-    align-content: center;
-    justify-self: center;
+    padding: .65rem 1.1rem;
+    border-bottom: 1px solid var(--hairline);
 }
-tr td{
-    width: 18vw;
+#historyInput tr:last-child{ border-bottom: none; }
+#historyInput td{ text-align: left; overflow-wrap: anywhere; }
+#historyInput tr.emptyRow{
+    display: block;
     text-align: center;
-
+    color: var(--muted);
+    padding: 1.75rem 1rem;
 }
 
-.divDetails{
-    width: 6vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    text-align: left;
-    padding-left: 1.7vw;
-    display: flex;
-    z-index: 3;
-    }
-.divDetails1{
-    width: 11vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex ;
-    z-index: 3;
-    margin-left: 6.5vw;
-
-}
-.divDetails2{
-    width: 13vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex;
-    z-index: 3;
-    margin-left: .4vw;
-    
-}
-.divDetails3{
-    width: 7vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex;
-    z-index: 3;
-    padding-left: 2vw;
-
-}
-.divDetails4{
-    width: 7vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex;
-    z-index: 3;
-    padding-left: 2.4vw;
-}
-.divDetails5{
-    width: 7vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex;
-    z-index: 3;
-    padding-left: 2.2vw;
-}
-.divDetails6{
-    width: 5vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex;
-    z-index: 3;
-    padding-left: 4vw;
-}
-.divDetails7{
-    width: 7vw;
-    height: 20vw;
-    color: #6b6b6b;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .75vw;
-    display:flex;
-    z-index: 3;
-    padding-left: 4vw;
-}
-
-/***** ADD USER FORM *****/
-
-#aduserIconContainer{
-    background-color: white;
-    width: 35vw;
-    height: 2vw;
-    font-size: 1vw;
-    padding:1vw;
-    border-radius: 2vw;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
-    z-index: 3;
-    position: absolute;                     /********need to hidden********/
-    top: 29.4vw;
-    left: .5vw;
-    visibility: hidden;}
+/* =========================================================
+   ADD USER
+   ========================================================= */
 #aduserInputContainer{
-    width: 34vw;
-    height: 33vw;
-    background-color: rgb(255, 255, 255);
-    border-radius: 2vw 2vw 2vw 2vw;
-    margin-left: 8vw;
-    margin-top: -35.7vw;
     display: flex;
-    flex-direction: column;                 /********need to hidden********/
-    align-items: center;
-    z-index: 4;
-    position: absolute;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
+    flex-direction: column;
+    gap: .7rem;
+    background: var(--white);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: clamp(1rem, 1.8vw, 1.5rem);
     visibility: hidden;
 }
-#titleAduser{
-    width:31.4vw;
-    height: 2.7vw;
-    background-color: #005EFF;
-    border-radius: 1.5vw;
-    margin-top: 1vw;
-    text-align: center;
-    padding-top: .8vw;
-    font-size: 1.5vw;
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    margin-bottom: 2.5vw;
-    z-index: 4;
-}
-.aduserInputs{
-    width: 28vw;
-    height: 1vw;
-    border-radius: 1vw;
-    margin-bottom: 1.5vw;
-    z-index: 4;
-    border: .15vw solid rgb(177, 177, 177);
-    padding: .5vw 0vw .5vw 1vw;
-    font-size: .8vw;
-    font-family: 'Montserrat', sans-serif;
-    color: rgb(49, 47, 47);
-}
-#dateofBirthAduser{
-    width: 10vw;
-    display: flex;
-    align-self: flex-start;
-    margin-left: 2.5vw;
-    color: rgb(49, 47, 47);
-}
-#dateofBirth{
-    width: 10vw;
-    display: flex;
-    align-self: flex-start;
-    margin-left: 3vw;
-    font-size: 1vw;
-    font-family: 'Montserrat', sans-serif;
-    padding-bottom: .5vw;
-    color: rgb(49, 47, 47);
 
-}
-#initialDeposit{
-    width: 10vw;
-    display: flex;
-    align-self: flex-start;
-    margin-left: 3vw;
-    font-size: 1vw;
-    font-family: 'Montserrat', sans-serif;
-    padding-bottom: .5vw;
-    color: rgb(49, 47, 47);
-}
-#addButton{
-    background-color: #005EFF;
-    width: 6vw;
-    height: 2.5vw;
-    border-radius: 2vw;
-    font-size: 1.3vw;
-    margin-top: -1vw;
-    font-family: 'Montserrat', sans-serif;
-    color: #ffffff;
-    border: none;
-    
+#titleAduser{ margin-bottom: .35rem; }
+
+#dateofBirth, #initialDeposit{
+    font-size: .85rem;
+    color: var(--ink);
+    padding-left: .35rem;
+    margin-top: .15rem;
 }
 
-/******* TRANSACTION ******/
+#addButton{ align-self: center; margin-top: .6rem; }
 
-/********* DEPOSIT AND WITHDRAW ***********/
-#transacIconContainer{
-    background-color: #ffffff;
-    width: 35vw;
-    height: 2vw;
-    font-size: 1vw;
-    padding:1vw;
-    border-radius: 2vw;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
-    z-index: 3;
-    position: absolute;
-    top: 37.4vw;
-    left: .5vw; 
-    visibility: hidden;                    /********need to hidden********/
-}
-
-#depoContainer{
-    padding-top: 6vw;
-    width: 79vw;
-    height: 27vw;
-    background-color: rgb(255, 255, 255);
-    border-radius: 0vw 2vw 2vw 2vw;
-    margin-left: 8vw;
-    margin-top: -35.7vw;
-    display: flex;
-    flex-direction: column;             /********need to hidden********/
-    align-items: center;
-    z-index: 5;
-    position: absolute;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
-    visibility: hidden;
-
-}
-#withdrawForm{
-    padding-top: 6vw;
-    width: 79vw;
-    height: 27vw;
-    background-color: rgb(255, 255, 255);
-    border-radius: 0vw 2vw 2vw 2vw;
-    margin-left: 8vw;
-    margin-top: -35.7vw;
-    display: flex;
-    flex-direction: column;             /********need to hidden********/
-    align-items: center;
-    z-index: 5;
-    position: absolute;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16);
-    visibility: hidden;
-}
+/* =========================================================
+   TRANSACTIONS
+   ========================================================= */
 #titleTransac{
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    width:76vw;
-    height: 2.7vw;
-    background-color: #005EFF;
-    border-radius: 1.5vw;
-    margin-top: -35vw;                      /********need to hidden********/
-    margin-left: 9.5vw;
-    text-align: center;
-    padding-top: .8vw;
-    font-size: 1.5vw;
-    color: #ffffff;
-    font-family: 'Montserrat', sans-serif;
-    position: absolute;
-    z-index: 8;
+    align-items: stretch;
+    gap: .25rem;
+    background: var(--blue);
+    border-radius: var(--r-pill);
+    padding: .3rem;
+    margin-bottom: .85rem;
+    color: var(--white);
     visibility: hidden;
 }
-.transacInputs {
-    width: 73vw;
-    height: 1vw;
-    border-radius: 1vw;
-    z-index: 4;
-    border: .15vw solid rgb(177, 177, 177);
-    padding: .5vw 0vw .5vw 1vw;
-    font-size: .8vw;
-    font-family: 'Montserrat', sans-serif;
-    color: rgb(49, 47, 47);
-    margin-bottom: 1vw;
-}
-.numberLabel{
-    width: 10vw;
-    display: flex;
-    align-self: flex-start;
-    margin-left: 3vw;
-    font-size: 1vw;
-    font-family: 'Montserrat', sans-serif;
-    padding-bottom: .5vw;
-    color: rgb(49, 47, 47);
-}
-#depositBtn{
-    width: 25.33vw;
-    height: 2.4vw;
-    border-radius: 1.5vw 0vw 0vw 1.5vw;
-    color: rgb(255, 255, 255);
-    padding-top: .7vw;
-    margin-top: -.8vw;
-    /*border: .2vw solid #005EFF;*/
-    position: absolute;
-    z-index: 8;
-    left: 0vw;
+#depositBtn, #WithdrawBtn, #TransferBtn{
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: var(--field-h);    /* was a hardcoded 2.75rem that had already
+                                      drifted from the token at the breakpoint */
+    display: grid;
+    place-items: center;
+    padding: .35rem .5rem;
+    border: 2px solid transparent;
+    border-radius: var(--r-pill);
+    font-size: clamp(.85rem, 1.1vw, 1.1rem);
+    font-weight: 600;
+    text-align: center;
     cursor: pointer;
-}
-#WithdrawBtn{
-    width: 25.33vw;
-    height: 2.4vw;
-    color: rgb(255, 255, 255);
-    padding-top: .7vw;
-    margin-top: -.8vw;
-    margin-left: .6vw;
-    position: absolute;
-    z-index: 8;
-    left: 25vw;
-    cursor: pointer;
-}
-#TransferBtn{
-    width: 24vw;
-    height: 2.3vw;
-    border-radius: 0vw 1.5vw 1.5vw 0vw;
-    color: rgb(255, 255, 255);
-    padding-top: .8vw;
-    margin-top: -.8vw;
-    position: absolute;
-    z-index: 8;
-    left: 52vw;
-    cursor: pointer;
-}
-.depoButton, .withdrawButton, .transferButton{
-    background-color: #005EFF;
-    width: 11vw;
-    height: 2.5vw;
-    border-radius: 2vw;
-    font-size: 1.3vw;
-    font-family: 'Montserrat', sans-serif;
-    color: #ffffff;
-    border: none;
-    cursor: pointer;
-}
-.depoButton{
-    position: absolute;
-    top: 29vw;
-    z-index: 8;
-}
-.withdrawButton{
-    position: absolute;
-    top: 29vw;
-    z-index: 9;
-}
-.transferButton{
-    position: absolute;
-    top: 23vw;
-    left: -7vw;
-    z-index: 10;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
 }
 
+/* The open tab. These three declarations used to be written inline by the JS as
+   literal '#005EFF' / 'white', which meant the palette lived in two files. */
+#depositBtn.isActive, #WithdrawBtn.isActive, #TransferBtn.isActive{
+    background: var(--white);
+    border-color: var(--blue);
+    color: var(--blue);
+}
 
-/************ TRANSFER **************/
+#depoContainer, #withdrawForm, #transferContainer{
+    grid-area: 1 / 1;
+    align-self: start;
+    background: var(--white);
+    border-radius: 0 var(--r-lg) var(--r-lg) var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: clamp(1rem, 2vw, 1.75rem);
+    visibility: hidden;
+}
 
-#transferContainer{
-    background-color: #ffffff;
-    padding-top: 5.5vw;
-    width: 79vw;
-    height: 28vw;
-    border-radius: 0vw 2vw 2vw 2vw;
-    margin-left: 8vw;
-    margin-top: -35.7vw;
-    display: flex;
-    flex-direction: row;                 /********need to hidden********/
-    align-items: center;
-    z-index: 6;
-    position: absolute;
-    box-shadow: .5vw .5vw .5vw 0 rgba(0, 0, 0, .16); 
-    visibility: hidden;}
-#userTransferForm{
-    width: 39.5vw;
-    height: 33vw;
-    border-radius: 0vw 2vw 2vw 0vw;
-    margin-left: 1.8vw;
-    margin-top: 7vw;
+#depoContainer, #withdrawForm{
     display: flex;
     flex-direction: column;
-    align-items:flex-start;
-    z-index: 7;
+    gap: .65rem;
+}
+
+.userDetails, .userDetails1, .receiverDetails{
+    font-size: clamp(1rem, 1.3vw, 1.25rem);
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: .3rem;
+}
+
+/* Account picker — anchored to whichever field is being typed in */
+.fieldWrap{
+    position: relative;
+    width: 100%;
+}
+
+.pickList{
     position: absolute;
-    font-family: 'Montserrat', sans-serif;
-}
-#receiverTransferForm{
-    width: 39.5vw;
-    height: 33vw;
-    border-radius: 0vw 2vw 2vw 0vw;
-    margin-left: 41vw;
-    margin-top: 7vw;
-    display: flex;
-    flex-direction: column;
-    align-items:flex-start;
-    z-index: 7;
-    position: absolute;
-    font-family: 'Montserrat', sans-serif;
-}
-.transacInputs1, .transacInputs2{
-    width: 34vw;
-    height: 1vw;
-    border-radius: 1vw;
-    z-index: 7;
-    border: .15vw solid rgb(177, 177, 177);
-    padding: .5vw 0vw .5vw 1vw;
-    font-size: .8vw;
-    font-family: 'Montserrat', sans-serif;
-    color: rgb(49, 47, 47);
-    margin-bottom: 1vw;
-    padding-right: 1vw;
-}
-.numberLabel2, .numberLabel1, .receiverDetails, .userDetails1, .userDetails{
-    width: 10vw;
-    display: flex;
-    align-self: flex-start;
-    margin-left: 1vw;
-    font-size: 1vw;
-    font-family: 'Montserrat', sans-serif;
-    padding-bottom: .5vw;
-    color: rgb(49, 47, 47);
-}
-.receiverDetails, .userDetails1{
-    width: 20vw;
-    font-size: 1.5vw;
-    font-family: 'Montserrat', sans-serif;}
-.userDetails{
-    width: 20vw;
-    font-size: 1.5vw;
-    font-family: 'Montserrat', sans-serif;
-    margin-left: 2.7vw;
-}
-#sampleBtn{
-    width: 3vw;
-    height: 3vw;
-    background-color: black;
-    display: block;
-    position: absolute;
+    top: calc(100% + .35rem);
+    left: 0;
+    right: 0;
     z-index: 30;
+    margin: 0;
+    padding: .3rem;
+    list-style: none;
+    max-height: 14rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--white);
+    border: 1px solid var(--blue);
+    border-radius: var(--r-md);
+    box-shadow: 0 .75rem 1.75rem rgba(var(--scrim-rgb), .18);
+}
+.pickList[hidden]{ display: none; }
+
+.pickOption{
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .6rem .85rem;
+    border-radius: calc(var(--r-md) - .35rem);
+    font-size: .9rem;
+    color: var(--ink);
+    cursor: pointer;
+}
+.pickOption:hover,
+.pickOption.isActive{ background: var(--blue-tint); }
+.pickOption[aria-selected="true"]{ background: var(--blue); color: var(--white); }
+
+.pickPrimary{ font-weight: 600; }
+.pickMeta{
+    flex: 0 0 auto;
+    font-size: .78rem;
+    color: var(--muted);
+}
+.pickOption[aria-selected="true"] .pickMeta{ color: rgba(255, 255, 255, .85); }
+
+@media (max-width: 620px){
+    .pickOption{ padding: .75rem .85rem; }      /* comfortable touch targets */
+    .pickMeta{ font-size: .72rem; }
+}
+
+/* Inline validation messages, shown under the field they belong to */
+.fieldError{
+    display: none;
+    margin: -.3rem 0 .1rem;
+    padding-left: 1.1rem;
+    color: var(--danger);
+    font-size: .78rem;
+    font-weight: 600;
+    line-height: 1.35;
+}
+.fieldError.isShown{ display: block; }
+
+.transacInputs.hasError,
+.transacInputs1.hasError,
+.transacInputs2.hasError{
+    border-color: var(--danger);
+}
+.transacInputs.hasError:focus,
+.transacInputs1.hasError:focus,
+.transacInputs2.hasError:focus{
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px rgba(var(--danger-rgb), .16);
+}
+
+.numberLabel, .numberLabel1, .numberLabel2{
+    font-size: .85rem;
+    color: var(--ink);
+    padding-left: .35rem;
+    margin-top: .15rem;
+}
+
+.depoButton, .withdrawButton{ align-self: center; margin-top: .75rem; }
+
+/* ---------- Transfer (two columns) ---------- */
+#transferContainer{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 2.5rem);
+}
+#userTransferForm, #receiverTransferForm{
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+    min-width: 0;
+}
+.transferButton{ align-self: center; margin-top: auto; }
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+#modal{
+    position: fixed;
+    inset: 0;
+    background: rgba(var(--scrim-rgb), .6);
+    z-index: 40;               /* above the sticky rail, so it dims and blocks it */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .18s ease;
+    cursor: pointer;           /* clicking the backdrop dismisses */
+}
+body.modalOpen #modal{ opacity: 1; }
+
+.modal-dock{
+    position: fixed;
+    inset: 0;
+    z-index: 41;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    pointer-events: none;
+}
+.modal-dock > *{ pointer-events: auto; }
+
+#modalBox{
+    width: min(100%, 24rem);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--white);
+    border-radius: var(--r-lg);
+    box-shadow: 0 1.25rem 3rem rgba(var(--scrim-rgb), .3);
+    padding: 2.25rem 1.75rem 1.75rem;
+    text-align: center;
+    visibility: hidden;
+    opacity: 0;
+    transform: scale(.96) translateY(.5rem);
+    transition: opacity .18s ease, transform .18s ease;
+}
+body.modalOpen #modalBox{ opacity: 1; transform: none; }
+
+#modalText{
+    color: var(--blue);
+    font-size: clamp(1rem, 1.25vw, 1.2rem);
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: balance;
+}
+
+#modalQuestion{
+    margin-top: -.75rem;
+    color: var(--ink);
+    font-size: .95rem;
+}
+
+.modalActions{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .6rem;
+    width: 100%;
+}
+
+/* buttons inherit the card's visibility, so JS only decides which are shown */
+.modalBtn{
+    min-width: 6.5rem;
+    padding: .7rem 1.75rem;
+    background: var(--blue);
+    color: var(--white);
+    border: 2px solid var(--blue);
+    border-radius: var(--r-pill);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+}
+.modalBtn:hover{ background: var(--blue-deep); border-color: var(--blue-deep); }
+.modalBtn:active{ transform: translateY(1px); }
+/* soft halo rather than a hard ring, since a button is focused on open */
+.modalBtn:focus-visible{
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(var(--blue-rgb), .3);
+}
+
+.modalBtnGhost{
+    background: var(--white);
+    color: var(--blue);
+}
+.modalBtnGhost:hover{ background: var(--blue-tint); border-color: var(--blue); color: var(--blue); }
+
+/* forms run under the icon column, so their contents start clear of it */
+#searchFormContainer, #historyContainer, #aduserInputContainer,
+#titleTransac, #depoContainer, #withdrawForm, #transferContainer{
+    padding-left: calc(var(--rail) + .35rem);
+}
+
+/* =========================================================
+   TABLET  (<= 900px) — rail becomes a top bar
+   ========================================================= */
+@media (max-width: 900px){
+    /* The greeting moves up into the blue header so the icon bar can sit
+       directly on top of the form and its white shape can reach the card.
+       display:contents lets .topbar be reordered between them.            */
+    .app{
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto 1fr;
+    }
+    #header, .main{ grid-column: auto; grid-row: auto; }
+    .main{ padding: 0; }
+
+    /* the icon bar is the stage's first row, so it sits right on top of the form */
+    .stage{ grid-template-rows: auto 1fr; }
+    .panel{ grid-row: 2; grid-column: 1; }
+
+    #header{
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: .6rem;
+        background: transparent;
+        border-radius: 0;
+        padding: 1.25rem 1.25rem .85rem;   /* gap: logo+title → greeting */
+    }
+
+    .brandName{
+        display: block;
+        color: var(--white);
+        font-size: 1.4rem;
+        font-weight: 700;
+        letter-spacing: .01em;
+    }
+
+    #toLoad{
+        position: static;
+        width: 2.75rem;
+        margin: 0;
+    }
+
+    .rail-items{
+        position: relative;
+        left: auto;
+        top: auto;
+        grid-row: 1;
+        grid-column: 1;
+        flex-direction: row;
+        justify-content: space-around;
+        justify-self: center;
+        gap: .25rem;
+        margin: -1.75rem 0 .25rem;
+        padding: .5rem;
+        width: min(calc(100vw - 2.5rem), 30rem);
+        z-index: 2;
+    }
+
+    #iconcontphone{
+        display: block;
+        position: absolute;
+        inset: 0;
+        background: var(--blue);
+        border-radius: var(--r-pill);
+        z-index: 0;                /* no shadow: it drew a faint line across the
+                                      header band it overlaps */
+    }
+
+    /* the active icon's white disc is joined to the form by a short stem */
+    .rail-item{ width: 3.2rem; height: 3.2rem; padding: 0; }
+    .rail-item.isActive::before{ display: none; }
+    .rail-item.isActive{ background: var(--white); }
+    /* Same width as the circle, so the two read as one shape, and behind the
+       glyph: as a pseudo-element it would otherwise paint over the icon. */
+    .rail-item.isActive::after{
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 50%;
+        bottom: -.65rem;           /* stops at the blue bar's edge — the gap below
+                                      is page background, so it still reads as joined
+                                      even when a panel starts with a blue header */
+        background: var(--white);
+        z-index: -1;
+        pointer-events: none;
+    }
+
+    /* ONE blue surface for the whole header, painted by .app. Splitting it across
+       #header and .topbar left a hairline of page background wherever the two
+       boxes met on a fractional pixel. The white stage is what ends the blue. */
+    .app{ background: var(--blue-deep); }
+
+    .topbar{
+        flex-direction: column;
+        align-items: stretch;
+        gap: .85rem;                 /* even spacing: greeting → clock */
+        background: transparent;
+        border-radius: 0;
+        padding: 0 var(--pad) 2.25rem;
+    }
+    #greeting, #introName{ color: var(--white); }
+    #quotes{ color: rgba(255, 255, 255, .82); }
+
+    /* the header is a centred column on small screens, so the greeting follows */
+    .greet{ text-align: center; }
+    .greet-line{ justify-content: center; }   /* flex row: needs its own centring */
+    #quotes{ margin-inline: auto; }
+
+    .stage{
+        margin-top: 0;
+        padding: 0 var(--pad) var(--pad);
+        overflow-x: clip;          /* the artwork bleeds wider than the screen */
+        background: var(--white);
+        border-radius: 2rem 2rem 0 0;      /* the curve that closes the blue */
+    }
+
+    #containerBlue{
+        margin-top: 0;
+        border-radius: var(--r-lg);
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: .9ch;
+        padding: .75rem 1.25rem;
+    }
+    .clock-date{ margin-top: 0; }
+
+    /* Kept on small screens as a true background, centred on the viewport. Sized
+       in vw so it scales with the screen and bleeds past the edges rather than
+       shrinking to a thumbnail. */
+    #backgroundVector{
+        /* Absolute inside .stage rather than fixed to the viewport. The artwork
+           is an opaque RGB image with no alpha, so a viewport-centred copy
+           painted straight over the blue header; scoping it to the stage means
+           it physically cannot reach the header. */
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: min(165vw, 56rem);
+        max-height: 62vh;
+    }
+
+    .panel, .panel--adduser{ margin-left: 0; width: 100%; }
+    #searchFormContainer, #historyContainer, #aduserInputContainer,
+    #titleTransac, #depoContainer, #withdrawForm, #transferContainer{
+        padding-left: 1rem;
+    }
+}
+
+/* Transfer keeps its side-by-side columns until they get too cramped */
+@media (max-width: 720px){
+    #transferContainer{ grid-template-columns: minmax(0, 1fr); }
+}
+
+/* =========================================================
+   PHONE  (<= 620px)
+   ========================================================= */
+@media (max-width: 620px){
+    :root{ --field-h: 3rem; }
+
+    .rail-item{ padding: .45rem .5rem; }
+    .rail-icon{ width: 2rem; }
+
+
+    /* Search turns into a stacked card with its title visible */
+    #searchFormContainer{
+        flex-direction: column;
+        align-items: stretch;
+        border-radius: var(--r-lg);
+        padding: 1rem;
+        gap: .85rem;
+    }
+    #titleSearch{ display: block; }   /* styling comes from .section-title */
+    #searchFirstName, #searchLastName, #searchAccount{ flex: 0 0 auto; }
+    #searchbutton{ align-self: center; margin-top: .25rem; }
+
+    /* Segmented tabs stack rather than squeezing to nothing */
+    #titleTransac{
+        flex-direction: column;
+        border-radius: var(--r-lg);
+        gap: .35rem;
+    }
+
+    #depoContainer, #withdrawForm, #transferContainer{
+        border-radius: var(--r-lg);
+    }
+
+    /* The 5-column account table becomes one card per account, so the
+       balance stays on screen instead of hiding behind a sideways scroll. */
+    #historyContainer{ overflow-x: visible; gap: .75rem; }
+    #historyLabel{ display: none; }
+
+    #historyInput{ max-height: none; overflow-y: visible; }
+    #historyInput tr{
+        display: block;
+        min-width: 0;
+        padding: .9rem 1rem;
+        border: 1px solid var(--hairline);
+        border-radius: var(--r-md);
+        margin-bottom: .6rem;
+        background: var(--white);
+    }
+    #historyInput tr:last-child{ margin-bottom: 0; }
+    #historyInput td{
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: .2rem 0;
+        text-align: right;
+    }
+    #historyInput tr:not(.emptyRow) td::before{
+        color: var(--muted);
+        font-weight: 600;
+        text-align: left;
+    }
+    #historyInput tr:not(.emptyRow) td:nth-child(1)::before{ content: "Account"; }
+    #historyInput tr:not(.emptyRow) td:nth-child(2)::before{ content: "Name"; }
+    #historyInput tr:not(.emptyRow) td:nth-child(3)::before{ content: "Date"; }
+    #historyInput tr:not(.emptyRow) td:nth-child(4)::before{ content: "Time"; }
+    #historyInput tr:not(.emptyRow) td:nth-child(5)::before{ content: "Balance"; }
+    #historyInput tr:not(.emptyRow) td:nth-child(2),
+    #historyInput tr:not(.emptyRow) td:nth-child(5){
+        color: var(--ink);
+        font-weight: 600;
+    }
+
+    .hideBtn{ width: 2.25rem; height: 2.25rem; top: -.75rem; right: -.25rem; }
+}
+
+/* =========================================================
+   Very small phones
+   ========================================================= */
+@media (max-width: 380px){
+    .rail-item{ padding: .4rem .3rem; }
+    .rail-icon{ width: 1.75rem; }
+    #containerBlue{ flex-direction: column; align-items: center; }
+}
+
+/* =========================================================
+   Short landscape viewports — keep panels reachable
+   ========================================================= */
+@media (max-height: 620px) and (min-width: 901px){
+    #header{ overflow-y: auto; }
+    #historyInput{ max-height: 40vh; }
+}
+
+@media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+    }
 }
