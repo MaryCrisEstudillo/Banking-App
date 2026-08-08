@@ -3,14 +3,17 @@
 A teller-side banking dashboard built with vanilla HTML, CSS and JavaScript.
 Accounts are stored in the browser's `localStorage`, so no backend is required.
 
+**[Open the live app →](https://marycrisestudillo.github.io/Banking-App/)**
+
 ## Running it
 
 Open `index.html` in a browser, or serve the folder:
 
 ```bash
 python3 -m http.server 8000
-# then visit http://localhost:8000
 ```
+
+then visit <http://localhost:8000>.
 
 Log in with any first name — it is passed to the dashboard as a URL parameter
 and used for the greeting.
